@@ -1,6 +1,10 @@
-import express, { Application, json } from 'express'
+import express, { Application, json } from "express";
+import { startDatabase } from "./database";
+import { usersRoutes } from "./routers";
 
-const app: Application = express()
-app.use(json())
+const app: Application = express();
+app.use(json());
 
-export default app
+app.use("/users", usersRoutes);
+
+export default app;
