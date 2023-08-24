@@ -1,3 +1,3 @@
 import { usersRoutes } from "./users.routes";
-
-export { usersRoutes };
+import { loginRoutes } from "./login.routes";
+export { usersRoutes, loginRoutes };
