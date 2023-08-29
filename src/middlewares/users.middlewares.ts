@@ -18,7 +18,7 @@ const verifyEmail = async (
       [payload.email]
     );
     if (queryName.rowCount) {
-      return res.status(409).json({ message: "Email already exists." });
+      return res.status(409).json({ message: "Email already registered" });
     }
   }
   return next();

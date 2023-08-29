@@ -1,7 +1,13 @@
 import format from "pg-format";
-import { QueryConfig, QueryResult } from "pg";
+import bcrypt from "bcrypt";
+import { QueryConfig } from "pg";
 import { client } from "../database";
-import { User, UserCreate, UserResulte } from "../interfaces";
+import {
+  User,
+  UserCreate,
+  UserResulte,
+  UserWithoutPassword,
+} from "../interfaces";
 import { AppError } from "../errors";
 import { sign } from "jsonwebtoken";
 import {
@@ -42,7 +48,12 @@ const login = async (payload: User) => {
   return userToken;
 };
 
-const createUser = async (payload: UserCreate): Promise<User> => {
+const createUser = async (
+  payload: UserCreate
+): Promise<UserWithoutPassword> => {
+  const saltRounds = process.env.SECRET_KEY!;
+  const encriptedPassword = bcrypt.hash(payload.password, saltRounds);
+
   const queryString: string = format(
     'INSERT INTO  "users" (%I) VALUES (%L) RETURNING * ',
     Object.keys(payload),

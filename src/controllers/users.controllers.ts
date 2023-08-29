@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { User, UserCreate } from "../interfaces";
+import { User, UserWithoutPassword } from "../interfaces";
 import { usersServices } from "../services";
 
 const loginUser = async (req: Request, res: Response): Promise<Response> => {
@@ -8,8 +8,8 @@ const loginUser = async (req: Request, res: Response): Promise<Response> => {
 };
 
 const createUser = async (req: Request, res: Response): Promise<Response> => {
-  const users: User = await usersServices.createUser(req.body);
-  console.log(req.body);
+  const users: UserWithoutPassword = await usersServices.createUser(req.body);
+
   return res.status(201).json(users);
 };
 

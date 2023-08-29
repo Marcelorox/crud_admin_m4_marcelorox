@@ -30,7 +30,9 @@ const listCourses = async (): Promise<any> => {
   return users;
 };
 
-const register = async (course: UserCourseCreate): Promise<UserCourse> => {
+const registerCourseUser = async (
+  course: UserCourseCreate
+): Promise<UserCourse> => {
   const queryString: string = format(
     `INSERT INTO "userCourses" (%I) VALUES (%L) RETURNING *`,
     Object.keys(course),
@@ -41,13 +43,16 @@ const register = async (course: UserCourseCreate): Promise<UserCourse> => {
   return queryResult.rows[0];
 };
 
-const deleteCourse = async (course: any): Promise<any> => {
-  const queryString: string = format(
-    `INSERT INTO "userCourses" courseId VALUES $1 RETURNING *`,
-    Object.keys(course),
-    Object.values(course)
-  );
-  const queryResult: CourseResulte = await client.query(queryString);
+const deleteCourse = async (courseId: number, userId: number): Promise<any> => {
+  const queryString: string = `UPDATE "userCourses"
+    SET active = false
+    WHERE "userId" = $1 AND "courseId" = $2
+    RETURNING *`;
+
+  const queryResult: CourseResulte = await client.query(queryString, [
+    courseId,
+    userId,
+  ]);
 
   const users = validateGetCourses.parse(queryResult.rows);
 
@@ -57,5 +62,6 @@ const deleteCourse = async (course: any): Promise<any> => {
 export default {
   createCourse,
   listCourses,
-  register,
+  registerCourseUser,
+  deleteCourse,
 };

@@ -26,11 +26,33 @@ const UserCourseRegister = async (
     userId: Number(req.params.userId),
   };
 
-  const courses: UserCourse = await coursesServices.register(requestData);
+  const courses: UserCourse = await coursesServices.registerCourseUser(
+    requestData
+  );
 
   return res.status(201).json({
     message: "User successfully vinculed to course",
   });
 };
 
-export default { registerCourse, listCourse, UserCourseRegister };
+const desactiveCourseOfUser = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const courseId = Number(req.params.courseId);
+  const userId = Number(req.params.userId);
+
+  const courses: UserCourse = await coursesServices.deleteCourse(
+    courseId,
+    userId
+  );
+
+  return res.status(204).json();
+};
+
+export default {
+  registerCourse,
+  listCourse,
+  UserCourseRegister,
+  desactiveCourseOfUser,
+};

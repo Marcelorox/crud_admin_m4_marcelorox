@@ -1,4 +1,9 @@
-import { User, UserCreate, UserResulte } from "./users.interfaces";
+import {
+  User,
+  UserCreate,
+  UserResulte,
+  UserWithoutPassword,
+} from "./users.interfaces";
 import {
   UserCourse,
   Course,
@@ -10,6 +15,7 @@ import {
 export {
   User,
   Course,
+  UserWithoutPassword,
   CourseCreate,
   CourseResulte,
   UserCourse,

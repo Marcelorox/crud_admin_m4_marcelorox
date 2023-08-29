@@ -23,8 +23,15 @@ coursesRoutes.post(
   verifyAdmin,
   verifyCourse,
   verifyUser,
-
   courseControllers.UserCourseRegister
+);
+coursesRoutes.delete(
+  "/:courseId/users/:userId",
+  verifyJwt,
+  verifyAdmin,
+  verifyCourse,
+  verifyUser,
+  courseControllers.desactiveCourseOfUser
 );
 // coursesRoutes.delete("/:courseId/users/:userId", courseControllers);
 // coursesRoutes.get("/:id/users", courseControllers);
