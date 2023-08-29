@@ -58,10 +58,18 @@ const deleteCourse = async (courseId: number, userId: number): Promise<any> => {
 
   return users;
 };
+const listUserCourses = async (id: number): Promise<any> => {
+  const queryString: string = `SELECT * FROM "courses" WHERE "id" = $1`;
+  const queryResult: CourseResulte = await client.query(queryString, [id]);
+  const users = validateGetCourses.parse(queryResult.rows);
+
+  return users;
+};
 
 export default {
   createCourse,
   listCourses,
   registerCourseUser,
+  listUserCourses,
   deleteCourse,
 };

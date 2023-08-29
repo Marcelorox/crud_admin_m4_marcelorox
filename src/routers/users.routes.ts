@@ -14,6 +14,12 @@ usersRoutes.post(
 );
 
 usersRoutes.get("", verifyJwt, verifyAdmin, usersControllers.listUsers);
-// usersRoutes.get("/:id/courses", );
+usersRoutes.get("", verifyJwt, verifyAdmin, usersControllers.listUsers);
+usersRoutes.get(
+  "/:id/courses",
+  verifyJwt,
+  verifyAdmin,
+  usersControllers.listCoursesUser
+);
 
 export { usersRoutes };

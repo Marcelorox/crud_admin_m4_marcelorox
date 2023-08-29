@@ -33,7 +33,11 @@ coursesRoutes.delete(
   verifyUser,
   courseControllers.desactiveCourseOfUser
 );
-// coursesRoutes.delete("/:courseId/users/:userId", courseControllers);
-// coursesRoutes.get("/:id/users", courseControllers);
+coursesRoutes.get(
+  "/:id/users",
+  verifyJwt,
+  verifyAdmin,
+  courseControllers.listUsersCourses
+);
 
 export { coursesRoutes };

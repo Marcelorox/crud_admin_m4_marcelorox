@@ -8,8 +8,8 @@ const validateRegisterUser = z.object({
 });
 
 const validateLogin = z.object({
-  email: z.string().max(50).nonempty(),
-  password: z.string().max(120).nonempty(),
+  email: z.string().email().max(50),
+  password: z.string().max(120),
 });
 
 const validateRegisterUserReturn = validateRegisterUser

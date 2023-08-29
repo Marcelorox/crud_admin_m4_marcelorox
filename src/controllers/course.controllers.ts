@@ -50,9 +50,20 @@ const desactiveCourseOfUser = async (
   return res.status(204).json();
 };
 
+const listUsersCourses = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const courses: Course[] = await coursesServices.listUserCourses(
+    Number(req.params.id)
+  );
+  return res.status(200).json(courses);
+};
+
 export default {
   registerCourse,
   listCourse,
+  listUsersCourses,
   UserCourseRegister,
   desactiveCourseOfUser,
 };

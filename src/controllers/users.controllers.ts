@@ -3,8 +3,8 @@ import { User, UserWithoutPassword } from "../interfaces";
 import { usersServices } from "../services";
 
 const loginUser = async (req: Request, res: Response): Promise<Response> => {
-  const token: string = await usersServices.login(req.body);
-  return res.status(201).json(token);
+  const token = await usersServices.login(req.body);
+  return res.status(200).json(token);
 };
 
 const createUser = async (req: Request, res: Response): Promise<Response> => {
@@ -18,5 +18,15 @@ const listUsers = async (req: Request, res: Response): Promise<Response> => {
 
   return res.status(200).json(users);
 };
+const listCoursesUser = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const users: User[] = await usersServices.listCoursesUser(
+    Number(req.params.id)
+  );
 
-export default { createUser, loginUser, listUsers };
+  return res.status(200).json(users);
+};
+
+export default { createUser, loginUser, listUsers, listCoursesUser };

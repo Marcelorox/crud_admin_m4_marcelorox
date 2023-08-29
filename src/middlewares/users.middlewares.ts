@@ -28,11 +28,13 @@ const verifyJwt = (req: Request, res: Response, next: NextFunction) => {
   const bearerToken: string | undefined = req.headers.authorization;
 
   if (!bearerToken) {
-    throw new AppError("Missing bearer token!", 401);
+    throw new AppError("Missing bearer token", 401);
   }
 
   const token = bearerToken.split(" ")[1];
+
   verify(token, process.env.SECRET_KEY!, (err, decoded) => {
+    console.log(err);
     if (err) throw new AppError(err.message, 401);
     res.locals = { ...res.locals, decoded };
   });
@@ -42,7 +44,7 @@ const verifyJwt = (req: Request, res: Response, next: NextFunction) => {
 
 const verifyAdmin = (req: Request, res: Response, next: NextFunction) => {
   const { admin } = res.locals.decoded;
-  if (!admin) throw new AppError("insuficient permition", 403);
+  if (!admin) throw new AppError("Insufficient permission", 403);
 
   return next();
 };
@@ -59,7 +61,7 @@ const verifyCourse = async (
   ]);
 
   if (!queryName.rowCount) {
-    return res.status(409).json({
+    return res.status(404).json({
       message: "User/course not found",
     });
   }
@@ -78,7 +80,7 @@ const verifyUser = async (
   ]);
 
   if (!queryName.rowCount) {
-    return res.status(409).json({
+    return res.status(404).json({
       message: "User/course not found",
     });
   }
