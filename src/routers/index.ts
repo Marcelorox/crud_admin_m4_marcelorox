@@ -1,3 +1,4 @@
 import { usersRoutes } from "./users.routes";
 import { loginRoutes } from "./login.routes";
-export { usersRoutes, loginRoutes };
+import { coursesRoutes } from "./courses.routes";
+export { usersRoutes, loginRoutes, coursesRoutes };

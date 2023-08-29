@@ -1,3 +1,3 @@
 import usersControllers from "./users.controllers";
-
-export { usersControllers };
+import courseControllers from "./course.controllers";
+export { usersControllers, courseControllers };

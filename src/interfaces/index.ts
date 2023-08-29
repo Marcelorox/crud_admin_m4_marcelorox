@@ -1,15 +1,12 @@
+import { User, UserCreate, UserResulte } from "./users.interfaces";
 import {
-  User,
+  UserCourse,
   Course,
   CourseCreate,
   CourseResulte,
-  UserCourse,
   UserCourseCreate,
   UserCourseResulte,
-  UserCreate,
-  UserResulte,
-} from "./users.interfaces";
-
+} from "./courses.interfaces";
 export {
   User,
   Course,

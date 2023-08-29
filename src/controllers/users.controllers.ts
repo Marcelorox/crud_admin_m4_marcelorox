@@ -9,14 +9,14 @@ const loginUser = async (req: Request, res: Response): Promise<Response> => {
 
 const createUser = async (req: Request, res: Response): Promise<Response> => {
   const users: User = await usersServices.createUser(req.body);
-
+  console.log(req.body);
   return res.status(201).json(users);
 };
 
 const listUsers = async (req: Request, res: Response): Promise<Response> => {
   const users: User[] = await usersServices.listUser();
 
-  return res.status(201).json(users);
+  return res.status(200).json(users);
 };
 
 export default { createUser, loginUser, listUsers };

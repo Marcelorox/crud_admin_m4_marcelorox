@@ -11,32 +11,4 @@ interface User {
 type UserCreate = Omit<User, "id">;
 type UserResulte = QueryResult<User>;
 
-interface Course {
-  id: number;
-  name: string;
-  description: string;
-}
-
-type CourseCreate = Omit<Course, "id">;
-type CourseResulte = QueryResult<Course>;
-
-interface UserCourse {
-  id: number;
-  active: boolean;
-  userId: number;
-  courseId: number;
-}
-type UserCourseCreate = Omit<UserCourse, "id">;
-type UserCourseResulte = QueryResult<UserCourse>;
-
-export {
-  UserCourse,
-  UserCourseCreate,
-  UserCourseResulte,
-  Course,
-  CourseResulte,
-  CourseCreate,
-  UserCreate,
-  UserResulte,
-  User,
-};
+export { UserCreate, UserResulte, User };

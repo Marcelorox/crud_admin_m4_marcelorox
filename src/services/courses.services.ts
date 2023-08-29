@@ -1,130 +1,61 @@
-// import format from "pg-format";
-// import { QueryConfig, QueryResult } from "pg";
-// import { client } from "../database";
-// import { User, UserCreate, UserResulte } from "../interfaces";
-// import { AppError } from "../errors";
-// import { sign } from "jsonwebtoken";
+import format from "pg-format";
+import {
+  Course,
+  CourseCreate,
+  CourseResulte,
+  UserCourse,
+  UserCourseCreate,
+  UserCourseResulte,
+} from "../interfaces";
+import { client } from "../database";
+import { validateGetCourses } from "../schemas/courses.schemas";
 
-// const login = async (payload: User) => {
-//   const queryString: string = `SELECT * WHERE email = $1`;
+const createCourse = async (payload: CourseCreate): Promise<Course> => {
+  const queryString: string = format(
+    'INSERT INTO  "courses" (%I) VALUES (%L) RETURNING * ',
+    Object.keys(payload),
+    Object.values(payload)
+  );
 
-//   const queryConfig: QueryConfig = {
-//     text: queryString,
-//     values: [payload.email],
-//   };
+  const queryresult: CourseResulte = await client.query(queryString);
 
-//   const queryresult: UserResulte = await client.query(queryConfig);
+  return queryresult.rows[0];
+};
 
-//   if (!queryresult.rowCount) {
-//     throw new AppError("email/password are incorrect", 401);
-//   }
+const listCourses = async (): Promise<any> => {
+  const queryString: string = `SELECT * FROM courses`;
+  const queryResult: CourseResulte = await client.query(queryString);
+  const users = validateGetCourses.parse(queryResult.rows);
 
-//   const users: User = queryresult.rows[0];
+  return users;
+};
 
-//   if (users.password !== payload.password) {
-//     throw new AppError("email/password are incorrect", 401);
-//   }
+const register = async (course: UserCourseCreate): Promise<UserCourse> => {
+  const queryString: string = format(
+    `INSERT INTO "userCourses" (%I) VALUES (%L) RETURNING *`,
+    Object.keys(course),
+    Object.values(course)
+  );
+  const queryResult: UserCourseResulte = await client.query(queryString);
 
-//   const userToken: string = sign(
-//     {
-//       email: users.email,
-//       admin: users.admin,
-//     },
-//     process.env.SECRET_KEY!,
-//     { subject: users.id.toString(), expiresIn: process.env.EXPIRES_IN! }
-//   );
+  return queryResult.rows[0];
+};
 
-//   return userToken;
-// };
+const deleteCourse = async (course: any): Promise<any> => {
+  const queryString: string = format(
+    `INSERT INTO "userCourses" courseId VALUES $1 RETURNING *`,
+    Object.keys(course),
+    Object.values(course)
+  );
+  const queryResult: CourseResulte = await client.query(queryString);
 
-// const createUser = async (payload: UserCreate): Promise<User> => {
-//   const queryString: string = format(
-//     'INSERT INTO  "users" (%I) VALUES (%L) RETURNING * ',
-//     Object.keys(payload),
-//     Object.values(payload)
-//   );
+  const users = validateGetCourses.parse(queryResult.rows);
 
-//   const queryresult: UserResulte = await client.query(queryString);
+  return users;
+};
 
-//   return queryresult.rows[0];
-// };
-
-// const createDevInfo = async (
-//   id: string,
-//   payload: DevelopersInfoCreate
-// ): Promise<Developers> => {
-//   const { developerSince, preferredOS } = payload;
-
-//   const queryString: string = `
-//     INSERT INTO "developerInfos" ("developerSince", "preferredOS", "developerId")
-//     VALUES ($1, $2, $3)
-//     RETURNING *
-//   `;
-
-//   const queryResult: QueryResult = await client.query(queryString, [
-//     developerSince,
-//     preferredOS,
-//     id,
-//   ]);
-
-//   return queryResult.rows[0];
-// };
-
-// const listDev = async (id: string): Promise<Developers> => {
-//   const queryList: string = `SELECT
-//     "d"."id" AS "developerId",
-//     "d"."name" AS "developerName",
-//     "d"."email" AS "developerEmail"
-//     FROM "developers" AS "d"
-//     WHERE "d"."id" = $1`;
-
-//   const queryResult: DevelopersResulte = await client.query(queryList, [id]);
-
-//   return queryResult.rows[0];
-// };
-
-// const patchDev = async (
-//   id: string,
-//   payload: Developers
-// ): Promise<Developers> => {
-//   const queryString: string = format(
-//     `
-//     UPDATE "developers"
-//     SET (%I) = ROW (%L)
-//     WHERE "id" = $1
-//     RETURNING *;
-//   `,
-//     Object.keys(payload),
-//     Object.values(payload)
-//   );
-
-//   const queryConfig: QueryConfig = {
-//     text: queryString,
-//     values: [id],
-//   };
-//   const queryResult: DevelopersResulte = await client.query(queryConfig);
-
-//   return queryResult.rows[0];
-// };
-
-// const deleteDev = async (id: string) => {
-//   const queryString: string = `
-//       DELETE FROM "developers"
-//       WHERE "id" = $1
-//       RETURNING *;
-//     `;
-
-//   const queryConfig: QueryConfig = {
-//     text: queryString,
-//     values: [id],
-//   };
-
-//   const queryResult: DevelopersResulte = await client.query(queryConfig);
-
-//   return queryResult.rows[0];
-// };
-
-// export default {
-//   login,
-//   createUser,
-// };
+export default {
+  createCourse,
+  listCourses,
+  register,
+};

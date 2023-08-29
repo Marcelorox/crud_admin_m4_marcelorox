@@ -1,8 +1,9 @@
 import "dotenv/config";
-import jwt, { Jwt } from "jsonwebtoken";
+import { verify } from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { client } from "../database";
 import { User } from "../interfaces";
+import { AppError } from "../errors";
 
 const verifyEmail = async (
   req: Request,
@@ -22,22 +23,66 @@ const verifyEmail = async (
   }
   return next();
 };
+
 const verifyJwt = (req: Request, res: Response, next: NextFunction) => {
   const bearerToken: string | undefined = req.headers.authorization;
 
   if (!bearerToken) {
-    return res.status(401).json({ error: "Authorization token missing" });
+    throw new AppError("Missing bearer token!", 401);
   }
 
-  const authorizationHeader = bearerToken;
+  const token = bearerToken.split(" ")[1];
+  verify(token, process.env.SECRET_KEY!, (err, decoded) => {
+    if (err) throw new AppError(err.message, 401);
+    res.locals = { ...res.locals, decoded };
+  });
 
-  const token = authorizationHeader.replace("Bearer ", "");
-  const decodedToken: any = jwt.verify(token, process.env.SECRET_KEY as string);
+  return next();
+};
 
-  if (!decodedToken.admin) {
-    return res.status(401).json({ message: "Usuário não autorizado." });
+const verifyAdmin = (req: Request, res: Response, next: NextFunction) => {
+  const { admin } = res.locals.decoded;
+  if (!admin) throw new AppError("insuficient permition", 403);
+
+  return next();
+};
+
+const verifyCourse = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> => {
+  const param: number = Number(req.params.courseId);
+
+  const queryName = await client.query("SELECT * FROM courses WHERE id = $1;", [
+    param,
+  ]);
+
+  if (!queryName.rowCount) {
+    return res.status(409).json({
+      message: "User/course not found",
+    });
   }
   return next();
 };
 
-export { verifyEmail, verifyJwt };
+const verifyUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> => {
+  const param: number = Number(req.params.userId);
+
+  const queryName = await client.query("SELECT * FROM users WHERE id = $1;", [
+    param,
+  ]);
+
+  if (!queryName.rowCount) {
+    return res.status(409).json({
+      message: "User/course not found",
+    });
+  }
+  return next();
+};
+
+export { verifyJwt, verifyEmail, verifyAdmin, verifyUser, verifyCourse };
